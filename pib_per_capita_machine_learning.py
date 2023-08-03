@@ -13,6 +13,84 @@ from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import r2_score, mean_squared_error
+from pmdarima.arima import auto_arima
+
+# Funções de gráficos de comparação, gráficos de previsão
+
+def mostrar_grafico(X, Y):
+
+    fig = go.Figure(
+        go.Scatter(x=X, y=Y)
+    )
+
+    fig.update_layout(height=600, width=800, title='Gráfico PIB per Capita', xaxis_title='Anos', yaxis_title='PIB per capita')
+    fig.show()
+
+    #fig.write_image(f"grafico-pib-percapita.png")
+
+def grafico_comparar_markers(valores_reais, valores_previstos, anos):
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=anos, y=valores_reais, mode='markers', name='Valores Reais de Teste'))
+    fig.add_trace(go.Scatter(x=anos, y=valores_previstos, mode='markers', name='Valores previstos pelo machine learning'))
+
+    fig.update_layout(height=600, width=800, title='Gráfico de comparação',
+                      xaxis_title='Ano', yaxis_title='Valores')
+    fig.show()
+
+    #fig.write_image("grafico-comparacao-markers.png")
+
+def grafico_previsao_linha(valores_reais, valores_previstos, anos_x, anos_prev):
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=anos_x, y=valores_reais, mode='lines', name='Valores Originais'))
+    fig.add_trace(go.Scatter(x=anos_prev, y=valores_previstos, mode='markers', name='Valor Previsto', line=dict(color='green')))
+    fig.add_trace(go.Scatter(x=[anos_x[-1], anos_prev[0]], y=[valores_reais[-1], valores_previstos[0]], mode='lines', showlegend=False, line=dict(color='green')))
+
+    fig.update_layout(height=600, width=800, title='Gráfico de Previsão',
+                      xaxis_title='Ano', yaxis_title='Valores')
+    fig.show()
+
+    #fig.write_image(f"grafico-previsao-linha.png")
+
+
+def grafico_comparacao_linha(valores_reais, valores_previstos, anos_x, anos_prev):
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=anos_x, y=valores_reais, mode='lines', name='Valores Reais'))
+    fig.add_trace(go.Scatter(x=anos_prev, y=valores_previstos, mode='lines', name='Valores previstos pelo machine learning'))
+
+    fig.update_layout(height=600, width=800, title='Gráfico de Comparação',
+                      xaxis_title='Ano', yaxis_title='Valores')
+    fig.show()
+
+    #fig.write_image(f"grafico-comparacao-linha.png")
+  
+def grafico_previsao_linha_arima(anos_x, anos_prev, valor_prev):
+
+    modelo_arima = auto_arima(valor_prev)
+
+    fig = go.Figure(go.Scatter(
+    x=anos_x.columns, 
+    y=valor_prev, name='Observed'
+
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=anos_x.columns, 
+        y = modelo_arima.predict_in_sample(), 
+        name='Predicted'
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=anos_prev.ravel(), 
+        y=modelo_arima.predict(len(anos_prev)), name='Forecast'))
+
+    fig.update_layout(
+        title=f'Previsão do PIB per capita para os próximos {len(anos_prev)} anos',
+        yaxis_title='Valores PIB per capita', 
+        xaxis_title='Data')
+
+    fig.show()
+
+    fig.write_image(f"grafico-previsao-linha-arima.png")
 
 # Lendo os dados
 
@@ -61,53 +139,6 @@ argentina_pib_per_capita.dtype
 
 argentina['anos'] = argentina['anos'].astype(float)
 
-# Funções de gráficos de comparação, gráficos de previsão
-
-def mostrar_grafico(X, Y):
-
-    fig = go.Figure(
-        go.Scatter(x=X, y=Y)
-    )
-
-    fig.update_layout(height=600, width=800, title='Gráfico PIB per Capita', xaxis_title='Anos', yaxis_title='PIB per capita')
-    fig.show()
-
-    #fig.write_image(f"grafico-pib-percapita.png")
-
-def grafico_comparar_markers(valores_reais, valores_previstos, anos):
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=anos, y=valores_reais, mode='markers', name='Valores Reais de Teste'))
-    fig.add_trace(go.Scatter(x=anos, y=valores_previstos, mode='markers', name='Valores previstos pelo machine learning'))
-
-    fig.update_layout(height=600, width=800, title='Gráfico de comparação',
-                      xaxis_title='Ano', yaxis_title='Valores')
-    fig.show()
-
-    #fig.write_image("grafico-comparacao-markers.png")
-
-def grafico_previsao_linha(valores_reais, valores_previstos, anos_x, anos_y):
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=anos_x, y=valores_reais, mode='lines', name='Valores Originais'))
-    fig.add_trace(go.Scatter(x=anos_y, y=valores_previstos, mode='markers', name='Valor Previsto', line=dict(color='green')))
-    fig.add_trace(go.Scatter(x=[anos_x[-1], anos_y[0]], y=[valores_reais[-1], valores_previstos[0]], mode='lines', showlegend=False, line=dict(color='green')))
-
-    fig.update_layout(height=600, width=800, title='Gráfico de Previsão',
-                      xaxis_title='Ano', yaxis_title='Valores')
-    fig.show()
-
-    #fig.write_image(f"grafico-previsao-linha.png")
-
-
-def grafico_comparacao_linha(valores_reais, valores_previstos, anos_x, anos_y):
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=anos_x, y=valores_reais, mode='lines', name='Valores Reais'))
-    fig.add_trace(go.Scatter(x=anos_y, y=valores_previstos, mode='lines', name='Valores previstos pelo machine learning'))
-
-    fig.update_layout(height=600, width=800, title='Gráfico de Comparação',
-                      xaxis_title='Ano', yaxis_title='Valores')
-    fig.show()
-
-    #fig.write_image(f"grafico-comparacao-linha.png")
 
 # Gráfico de PIB per Capita da Argentina.
 
@@ -261,7 +292,7 @@ valores_prever_tudo = valores_prever_tudo.reshape(-1, 1)
 
 # Modelo Decision Tree Regressor
 
-grafico_comparacao_linha(anos_x=df_gdp_capita_anos.loc[:, '1960':].columns, anos_y=df_gdp_capita_anos.loc[:, '1960':].columns,
+grafico_comparacao_linha(anos_x=df_gdp_capita_anos.loc[:, '1960':].columns, anos_prev=df_gdp_capita_anos.loc[:, '1960':].columns,
                  valores_reais=argentina_pib_per_capita, valores_previstos=modelo_arvore.predict(valores_prever_tudo))
 
 
@@ -331,13 +362,13 @@ print('\n====================================================================\n'
 
 # Gráfico de comparação de Valores Reais x Valores Previstos pelo Machine Learning do PIB do Brasil.
 
-grafico_comparacao_linha(anos_x=df_gdp_capita_anos.loc[:, '1960':].columns, anos_y=df_gdp_capita_anos.loc[:, '1960':].columns,
+grafico_comparacao_linha(anos_x=df_gdp_capita_anos.loc[:, '1960':].columns, anos_prev=df_gdp_capita_anos.loc[:, '1960':].columns,
                  valores_reais=brasil_pib_per_capita, valores_previstos=modelo_arvore.predict(valores_prever_tudo))
 
 
 #Modelo Random Forest Regressor
 
-grafico_comparacao_linha(anos_x=df_gdp_capita_anos.loc[:, '1960':].columns, anos_y=df_gdp_capita_anos.loc[:, '1960':].columns,
+grafico_comparacao_linha(anos_x=df_gdp_capita_anos.loc[:, '1960':].columns, anos_prev=df_gdp_capita_anos.loc[:, '1960':].columns,
                  valores_reais=brasil_pib_per_capita, valores_previstos=modelo_rf.predict(valores_prever_tudo))
 
 
@@ -345,5 +376,12 @@ valores_prever = np.array([2022.]).reshape(-1, 1)
 
 # Gráfico de previsão do PIB per capita do Brasil para o ano de 2022
 
-grafico_previsao_linha(anos_x=df_gdp_capita_anos.loc[:, '2005':].columns, anos_y=valores_prever.ravel(),
+grafico_previsao_linha(anos_x=df_gdp_capita_anos.loc[:, '2005':].columns, anos_prev=valores_prever.ravel(),
                  valores_reais=brasil_pib_per_capita[45:], valores_previstos=modelo_arvore.predict(valores_prever))
+
+valores_prever = np.array([2022., 2023., 2024.]).reshape(-1, 1)
+
+# Gráfico de Previsão do PIB per Capita do Brasil para os próximos 3 anos utilizando o Auto Arima
+
+grafico_previsao_linha_arima(anos_x=df_gdp_capita_anos.loc[:, '1960':], anos_prev=valores_prever,
+                             valor_prev=brasil_pib_per_capita,)
