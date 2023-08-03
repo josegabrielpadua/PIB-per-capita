@@ -2,7 +2,7 @@
 
 ### Introdução
 
-Este projeto tem como objetivo analisar os dados do Produto Interno Bruto (PIB) per capita da Argentina e do Brasil usando vários modelos de aprendizado de máquina. 
+Este projeto tem como objetivo analisar os dados do Produto Interno Bruto (PIB) per capita da Argentina e do Brasil usando vários modelos de Machine Learning. 
 O conjunto de dados utilizado contém valores históricos do PIB per capita para ambos os países de 1960 a 2021.
 
 ### Bibliotecas e Funções Utilizadas
@@ -12,7 +12,7 @@ O projeto utiliza as seguintes bibliotecas e funções:
 * Pandas: Para manipulação e análise de dados
 * NumPy: Para operações numéricas
 * Matplotlib e Plotly: Para visualização de dados
-* scikit-learn: Para modelos de aprendizado de máquina
+* scikit-learn: Para modelos de Machine Learning
 
 ### Carregamento e Pré-processamento dos Dados
 
@@ -27,7 +27,7 @@ O projeto utiliza as seguintes bibliotecas e funções:
 
 ### Treinamento e Avaliação dos Modelos
 
-1. O projeto treina e avalia diferentes modelos de aprendizado de máquina para prever o PIB per capita da Argentina e do Brasil.
+1. O projeto treina e avalia diferentes modelos de Machine Learning para prever o PIB per capita da Argentina e do Brasil.
 2. Os modelos utilizados são Linear Regression, Polinomial Regression, Support Vector Machines (SVM), Decision Tree e Random Forest.
 3. Para cada modelo, os dados são divididos em conjuntos de treinamento e teste, e o modelo é treinado nos dados de treinamento e avaliado nos dados de teste.
 4. As métricas de avaliação utilizadas são R-squared e Mean Squared Error (MSE).
@@ -41,7 +41,7 @@ O projeto utiliza as seguintes bibliotecas e funções:
 
 1. O projeto também faz uma previsão futura para o PIB per capita do Brasil para o ano de 2022, utilizando o melhor modelo.
 
-Este projeto demonstra a aplicação de vários modelos de aprendizado de máquina para analisar e prever o PIB per capita da Argentina e do Brasil.
+Este projeto demonstra a aplicação de vários modelos de Machine Learning para analisar e prever o PIB per capita da Argentina e do Brasil.
 O Random Forest Regressor foi considerado o melhor modelo para ambos os países, fornecendo previsões precisas.
 A visualização dos valores reais e previstos do PIB ajuda a entender o desempenho dos modelos ao longo do tempo.
 
